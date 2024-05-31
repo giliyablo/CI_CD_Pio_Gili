@@ -114,7 +114,7 @@ The format depends on your Ansible setup, but it typically includes IP addresses
 These files can be stored in a local directory or within your Ansible project directory on a server.
 
 Running the Script:
-Run the command: ansible-playbook docker_and_node_install.yml 
+Run the command: ansible-playbook ubuntu_docker_and_node_install.yml 
 (From the directory containing the script and inventory file).
 
 Example Output:
