@@ -28,7 +28,7 @@
       apt:
         name:
           - curl
-        cache_valid_time: 3600  
+        cache_valid_time: 3600  # Optional: Cache curl for an hour
 
       - name: Add NodeSource repository
         apt_repository:
@@ -49,4 +49,4 @@
       debug:
         msg:
           - Docker version is {{ docker_version.version }}
-          - Node.js version is {{ node_version }}  
+          - Node.js version is {{ node_version }}  # No need for register here
