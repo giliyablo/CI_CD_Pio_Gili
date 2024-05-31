@@ -94,7 +94,7 @@ pipeline {
             steps {
                 script {
                     dir('Pio_Repo') {
-						sh 'wget https://github.com/giliyablo/CI_CD_Pio_Gili/blob/1e6ac716c9089bbcf1ecdf5e69172555bae6c74e/Dockerfile' 
+						sh 'wget https://github.com/giliyablo/CI_CD_Pio_Gili/blob/24307ba2ebc98c07d376c94ee89e5c00fd516cc2/Dockerfile' 
 						sh 'docker build -t Pio_Repo .' 
                     }
                 }

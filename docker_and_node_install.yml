@@ -1,16 +1,15 @@
 ---
 - hosts: all
-  become: true  # Grant root privileges for package installation
+  become: true  
   tasks:
     - name: Update package lists
-      yum: name=* state=latest  # For RedHat/CentOS
-      # For Debian/Ubuntu: apt update_cache=yes cache_valid_time=3600
-
+      yum: name=* state=latest  
+      
     - name: Install Docker dependencies
       package:
         name:
           - docker-ce
-          - docker-compose  # Optional for docker-compose management
+          - docker-compose  
 
     - name: Add Docker user group
       group:
@@ -22,12 +21,12 @@
         name: "{{ ansible_user }}"
         groups: docker
         append: yes
-        state: present  # Allows managing Docker without sudo (optional)
+        state: present  
 
     - name: Install Node.js and npm using yum
       yum:
         name:
-          - nodejs  # Adjust package name if necessary
+          - nodejs  
         state: present
 
     - name: Enable and start Docker service
@@ -40,5 +39,5 @@
       debug:
         msg:
           - Docker version is {{ docker_version.version }}
-          - Node.js version is {{ node_version.version }}  # Assumes 'node -v' output
-      register: version_info  # Register results for verification
+          - Node.js version is {{ node_version.version }}  
+      register: version_info  
