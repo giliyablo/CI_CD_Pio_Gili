@@ -2,51 +2,51 @@
 - hosts: all
   become: true  
   tasks:
-  - name: Update package lists
-    apt: update_cache: yes
-
-  - name: Install Docker dependencies
-    apt:
-      name:
-        - docker-ce
-        - docker-compose
-
-  - name: Add Docker user group
-    group:
-      name: docker
-      state: present
-
-  - name: Add current user to Docker group (Optional)
-    user:
-      name: "{{ ansible_user }}"
-      groups: docker
-      append: yes
-      state: present
- 
-  - name: Install Node.js and npm using NodeSource repository
-    apt:
-      name:
-        - curl
-      cache_valid_time: 3600  # Optional: Cache curl for an hour
-
-    # Add NodeSource repository for latest Node.js
-    - name: Add NodeSource repository
-      apt_repository:
-        src: https://deb.nodesource.com/{{ ansible_lsb.codename }}/node_{{ node_version }}
-        keyurl: https://deb.nodesource.com/gpgkey.publicKey
-
-    - name: Install Node.js
+    - name: Update package lists
       apt:
-        name: nodejs
+        update_cache: yes
 
-  - name: Enable and start Docker service
-    service:
-      name: docker
-      state: started
-      enabled: yes
+    - name: Install Docker dependencies
+      apt:
+        name:
+          - docker-ce
+          - docker-compose
 
-  - name: Verify Docker and Node.js installations
-    debug:
-      msg:
-        - Docker version is {{ docker_version.version }}
-        - Node.js version is {{ node_version }}  # No need for register here
+    - name: Add Docker user group
+      group:
+        name: docker
+        state: present
+
+    - name: Add current user to Docker group (Optional)
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+        state: present
+
+    - name: Install Node.js and npm using NodeSource repository
+      apt:
+        name:
+          - curl
+        cache_valid_time: 3600  
+
+      - name: Add NodeSource repository
+        apt_repository:
+          src: https://deb.nodesource.com/{{ ansible_lsb.codename }}/node_{{ node_version }}
+          keyurl: https://deb.nodesource.com/gpgkey.publicKey
+
+      - name: Install Node.js
+        apt:
+          name: nodejs
+
+    - name: Enable and start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Verify Docker and Node.js installations
+      debug:
+        msg:
+          - Docker version is {{ docker_version.version }}
+          - Node.js version is {{ node_version }}  
