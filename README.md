@@ -102,7 +102,7 @@ Add Docker user group: Creates a group named docker.
 Add current user to Docker group: Allows the current user to manage Docker without sudo.
 Enable and start Docker service: Enables and starts the Docker service.
 Verify Docker installation: Prints the Docker version to confirm successful installation.
-
+ 
 	Added a task to install Node.js and npm using apt for Debian/Ubuntu systems. Adjust the package name for other distributions (e.g., nodejs on Fedora).
 Use the appropriate package manager for your distribution (e.g., yum for RedHat/CentOS).
 Modified the verification task to display both Docker and Node.js version information.
