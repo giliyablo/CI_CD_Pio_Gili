@@ -4,7 +4,7 @@
   tasks:
     - name: Update package lists
       yum: name=* state=latest  
-      
+       
     - name: Install Docker dependencies
       package:
         name:
