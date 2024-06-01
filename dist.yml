@@ -1,6 +1,6 @@
 ---
 - name: Install and configure Docker
-  hosts: all
+  hosts: localhost
   become: true  # Needs root privileges
 
   tasks:
