@@ -3,14 +3,6 @@
   hosts: localhost
   become: true
   tasks:
-    - name: Gather lsb facts (if available)
-      lsb_facts:
-
-    - name: Print Ubuntu distribution (if facts exist)
-      debug:
-        msg: "Ubuntu distribution: {{ ansible_lsb.distrib_description }} ({{ ansible_lsb.distrib_release })"
-      when: ansible_lsb.distrib_description is defined
-
     - name: Get system facts
       setup:
 
