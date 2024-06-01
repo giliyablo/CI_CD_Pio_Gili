@@ -44,9 +44,3 @@
           - docker-compose-plugin
         state: present
 
-    - name: Run Hello World container
-      docker:
-        name: hello-world
-        image: hello-world
-
-
