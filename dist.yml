@@ -1,11 +1,20 @@
 ---
 - name: Install and configure Docker
   hosts: localhost
-  become: true  # Needs root privileges
+  become: true
+  vars:
+    arch_mapping:
+      x86_64: amd64
+      aarch64: arm64
 
   tasks:
+    # Gather facts about the system
+    - name: Get system facts
+      setup:
+
     - name: Update package lists
-      apt: update_cache=yes
+      apt:
+        update_cache: yes
 
     - name: Install prerequisites
       apt:
@@ -32,7 +41,8 @@
         create: yes
 
     - name: Update package lists again
-      apt: update_cache=yes
+      apt:
+        update_cache: yes
 
     - name: Install Docker and related packages
       apt:
@@ -44,3 +54,24 @@
           - docker-compose-plugin
         state: present
 
+    - name: Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Verify Docker installation
+      debug:
+        msg:
+          - Docker version is {{ docker_version.version }}
+
+    - name: Install Node.js
+      apt:
+        name: nodejs
+
+    - name: Verify Node.js installation
+      debug:
+        msg:
+          - Node.js version is {{ node_version }}
+          
+          
