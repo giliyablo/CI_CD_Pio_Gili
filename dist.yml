@@ -20,11 +20,6 @@
       apt:
         name: nodejs
 
-    - name: Verify Node.js installation
-      debug:
-        msg:
-          - Node.js version is {{ node_version }}
-          
     - name: Install prerequisites
       apt:
         name:
@@ -61,8 +56,3 @@
         name: docker
         state: started
         enabled: yes
-
-    - name: Verify Docker installation
-      debug:
-        msg:
-          - Docker version is {{ docker_version.version }}

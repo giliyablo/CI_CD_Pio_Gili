@@ -79,13 +79,6 @@ YAML
         state: started
         enabled: yes
 
-    - name: Verify Docker and Node.js installations
-      debug:
-        msg:
-          - Docker version is {{ docker_version.version }}
-          - Node.js version is {{ node_version.version }}  # Assumes 'node -v' output
-      register: version_info  # Register results for verification
-
 
 Explanation:
 
