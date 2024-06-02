@@ -1,7 +1,7 @@
 ---
-- name: Install and configure Docker (CentOS)
-  hosts: all
-  become: true  # Needs root privileges
+- name: Install and configure NodeJS and Docker
+  hosts: localhost
+  become: true
 
   tasks:
     - name: Update package lists

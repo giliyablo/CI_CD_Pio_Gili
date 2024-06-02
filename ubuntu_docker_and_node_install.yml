@@ -1,5 +1,5 @@
 ---
-- name: Install and configure Docker
+- name: Install and configure NodeJS and Docker
   hosts: localhost
   become: true
   vars:
