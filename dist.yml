@@ -44,16 +44,20 @@
         name: docker.io
         state: present
         
-    - name: Start and enable Docker service
-      systemd:
-        name: docker
-        state: started
-        enabled: yes
-
     - name: Add user to docker group (replace 'your_user' with your actual user)
       user:
         name: your_user
         groups: docker
         append: yes
-      
-      
+        
+    # Start the Docker daemon
+    - name: Start Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    # Optional: Check Docker status (using debug module)
+    - name: Check Docker status (debug)
+      debug:
+        msg: "Docker daemon status: {{ service_docker.state }}"
