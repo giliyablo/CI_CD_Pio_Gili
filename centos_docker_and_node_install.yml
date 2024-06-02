@@ -1,6 +1,6 @@
 ---
 - name: Install and configure NodeJS and Docker
-  hosts: localhost
+  hosts: 172.17.0.3
   become: true
 
   tasks:
