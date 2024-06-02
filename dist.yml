@@ -8,7 +8,6 @@
       aarch64: arm64
 
   tasks:
-    # Gather facts about the system
     - name: Get system facts
       setup:
 
@@ -19,12 +18,6 @@
     - name: Install Node.js
       apt:
         name: nodejs
-
-    - name: Install prerequisites
-      apt:
-        name:
-          - ca-certificates
-          - curl
 
     - name: Create directory for Docker key
       file:
@@ -52,7 +45,15 @@
         state: present
         
     - name: Start and enable Docker service
-      service:
+      systemd:
         name: docker
         state: started
         enabled: yes
+
+    - name: Add user to docker group (replace 'your_user' with your actual user)
+      user:
+        name: your_user
+        groups: docker
+        append: yes
+      
+      
