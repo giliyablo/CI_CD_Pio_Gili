@@ -7,12 +7,15 @@
     - name: Update package lists
       yum: update_cache=yes
 
-    - name: Install prerequisites
+    - name: Install Node.js
       yum:
-        name:
-          - ca-certificates
-          - curl
+        name: nodejs
 
+    - name: Verify Node.js installation
+      debug:
+        msg:
+          - Node.js version is {{ node_version }}
+          
     - name: Create directory for Docker key
       file:
         path: /etc/yum.repos.d/
@@ -25,28 +28,19 @@
         dest: /etc/yum.repos.d/docker.asc
         mode: 0644
 
-    - name: Add repository for Docker
-      copy:
-        content: |
-          [docker-ce]
-          name=Docker CE Stable
-          baseurl=https://download.docker.com/linux/centos/{{ ansible_distribution_major }}/stable
-          gpgcheck=1
-          gpgkey=file:///etc/yum.repos.d/docker.asc
-        dest: /etc/yum.repos.d/docker.repo
+    - name: Install dnf-plugins-core for adding repositories
+      shell: dnf install dnf-plugins-core
+      register: dnf_install
 
-    - name: Update package lists again
-      yum: update_cache=yes
+    - name: Add Docker repository
+      shell: dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+      when: dnf_install.rc == 0  # Only run if previous step succeeded
 
-    - name: Install Docker and related packages
-      yum:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - docker-buildx-plugin
-          - docker-compose-plugin
+    - name: Install Docker package
+      package:
+        name: docker-ce
         state: latest
+      when: dnf_install.rc == 0  # Only run if previous steps succeeded
 
     - name: Start and enable Docker service
       service:
@@ -54,18 +48,13 @@
         state: started
         enabled: yes
 
+    - name: Add user to docker group (replace 'your_user' with your actual user)
+      user:
+        name: your_user
+        groups: docker
+        append: yes
+      
     - name: Verify Docker installation
       debug:
         msg:
           - Docker version is {{ docker_version.version }}
-
-    - name: Install Node.js
-      apt:
-        name: nodejs
-
-    - name: Verify Node.js installation
-      debug:
-        msg:
-          - Node.js version is {{ node_version }}
-          
-          

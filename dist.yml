@@ -16,6 +16,15 @@
       apt:
         update_cache: yes
 
+    - name: Install Node.js
+      apt:
+        name: nodejs
+
+    - name: Verify Node.js installation
+      debug:
+        msg:
+          - Node.js version is {{ node_version }}
+          
     - name: Install prerequisites
       apt:
         name:
@@ -34,26 +43,19 @@
         dest: /etc/apt/keyrings/docker.asc
         mode: 0644
 
-    - name: Add repository for Docker
-      lineinfile:
-        path: /etc/apt/sources.list.d/docker.list
-        line: "deb [arch={{ arch_mapping[ansible_architecture] }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu/dists/focal/stable"
-        create: yes
+    - name: Add Docker repository
+      shell: |
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     - name: Update package lists again
-      apt:
+      apt: 
         update_cache: yes
 
-    - name: Install Docker and related packages
+    - name: Install Docker engine
       apt:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - docker-buildx-plugin
-          - docker-compose-plugin
+        name: docker.io
         state: present
-
+        
     - name: Start and enable Docker service
       service:
         name: docker
@@ -64,14 +66,3 @@
       debug:
         msg:
           - Docker version is {{ docker_version.version }}
-
-    - name: Install Node.js
-      apt:
-        name: nodejs
-
-    - name: Verify Node.js installation
-      debug:
-        msg:
-          - Node.js version is {{ node_version }}
-          
-          
