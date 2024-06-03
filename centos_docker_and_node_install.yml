@@ -1,6 +1,6 @@
 ---
 - name: Install and configure NodeJS and Docker
-  hosts: webservers
+  hosts: all
   become: true
 
   tasks:
@@ -43,9 +43,9 @@
         state: started
         enabled: yes
 
-    - name: Add user to docker group (replace 'your_user' with your actual user)
+    - name: Add user to docker group 
       user:
-        name: your_user
+        name: centos
         groups: docker
         append: yes
       

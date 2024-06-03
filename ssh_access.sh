@@ -1,2 +1,2 @@
-echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKLpzc4iYTTk/nHsm03qG/1AOACOzYlZuLsuKg+zpAsf root@61453335268d" >> /home/61453335268d/.ssh/authorized_keys
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKLpzc4iYTTk/nHsm03qG/1AOACOzYlZuLsuKg+zpAsf root@61453335268d" >> /home/centos/.ssh/authorized_keys
 echo "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEsikcYIEpxkIdoLRYhz1PVFEIGtb+hHvDjDFvr0v7aaoe4mFUJqdRw3MNckDhmJRYN2olaGgQ+Phj6adlWiTmA= ╫ע╫ש╫£ ╫ש╫ס╫£╫ץ╫á╫º╫פ@DESKTOP-8FRC56P" >> /home/root/.ssh/authorized_keys
