@@ -4,15 +4,13 @@ pipeline {
 
     stages {
         stage('Clean Workspace') {
-            when {
-                expression { 
-					// Check for existing artifacts: 
-                    return sh script: 'return $([ -d node_modules ] || [ -d dist ])'  
-                }
-            }
             steps {
-				// Remove dependencies, built artifacts, and coverage reports: 
-                sh 'rm -rf node_modules dist ./*coverage*'  
+                script {
+					dir(workspace) {
+						// Remove dependencies, built artifacts, and coverage reports: 
+						sh 'rm -rf node_modules dist ./*coverage*'  
+					}
+				}
             }
         }
 
