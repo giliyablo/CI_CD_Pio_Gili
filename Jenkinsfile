@@ -115,7 +115,7 @@ pipeline {
 				}
 			}
         }
-
+	}
     post {
         always {
             archiveArtifacts '**/*.log'  // Archive logs for troubleshooting
