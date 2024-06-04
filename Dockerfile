@@ -1,20 +1,30 @@
-FROM node:18-alpine AS builder
+# Stage 1: Compile and Build angular codebase
+
+# Use official node image as the base image
+FROM node:latest as build
+
+# Set the working directory
 WORKDIR /app
 
-COPY package*.json ./
+# Add the source code to app
+COPY . /app
+
+# Install all the dependencies
 RUN npm install
+
+# Generate the build of the application
+RUN npm run build
 RUN ng build
 
-COPY . .
+# Stage 2: Serve app with nginx server
 
-WORKDIR /app/dist  # Adjust if needed
+# Use official nginx image as the base image
+FROM nginx:latest
 
-COPY . .
+# Copy the build output to replace the default nginx contents.
+COPY --from=build /app/dist /usr/share/nginx/html
 
-FROM nginx:alpine
-
-COPY --from=builder /app/dist /usr/share/nginx/html
-
+# Expose port 80
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
