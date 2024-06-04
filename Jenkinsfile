@@ -35,9 +35,9 @@ pipeline {
             steps {
                 script {
 					bat """
-						docker run -p 4200:4200 -t gili/gili-pio-app-image:latest"
+						docker run -p 4200:4200 -t gili/gili-pio-app-image:latest
 					"""
-                } //  bash -c "cd /app && ng 
+                } //  bash -c "cd /app && ng serve"
             }
         }
 
