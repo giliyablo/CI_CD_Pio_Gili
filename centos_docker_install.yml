@@ -18,21 +18,17 @@
         url: https://download.docker.com/linux/centos/gpg
         dest: /etc/yum.repos.d/docker.asc
         mode: 0644
-
-    - name: Install dnf-plugins-core for adding repositories
-      shell: dnf install dnf-plugins-core
-      register: dnf_install
-
+        
     - name: Add Docker repository
-      shell: dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-      when: dnf_install.rc == 0  # Only run if previous step succeeded
+      yum_config_manager:
+        name: docker-ce.repo
+        url: https://download.docker.com/linux/centos/docker-ce.repo
 
     - name: Install Docker package
-      package:
+      yum:
         name: docker-ce
         state: latest
-      when: dnf_install.rc == 0  # Only run if previous steps succeeded
-
+  
     - name: Start and enable Docker service
       service:
         name: docker
