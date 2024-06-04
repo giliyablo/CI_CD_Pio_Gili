@@ -1,6 +1,8 @@
 pipeline {
 	// Execute on any available agent: 
-    agent any  
+    agent {
+		label 'ci-cd'
+	}  
 
     stages {
         stage('Clean Workspace') {
@@ -24,9 +26,18 @@ pipeline {
         stage('Build Docker') {
             steps {
                 script {
-					// bat 'wget https://github.com/giliyablo/CI_CD_Pio_Gili/blob/24307ba2ebc98c07d376c94ee89e5c00fd516cc2/Dockerfile' 
 					bat 'docker build -t gili/gili-pio-app-image:latest .' 
                 }
+            }
+        }
+
+        stage('Deploy Docker') {
+            steps {
+                script {
+					bat """
+						docker run -p 4200:4200 -t gili/gili-pio-app-image:latest"
+					"""
+                } //  bash -c "cd /app && ng 
             }
         }
 
