@@ -6,9 +6,7 @@ pipeline {
         stage('Clean Workspace') {
             steps {
                 script {
-					dir(workspace) {
-						cleanWs()
-					}
+					cleanWs()
 				}
             }
         }
@@ -16,11 +14,9 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 script {
-					dir(workspace) {
-						git branch: 'main',
-						   credentialsId: 'GitHub_SSH_Login', 
-						   url: 'git@github.com:giliyablo/Pio_Repo.git'  
-					}
+					git branch: 'main',
+					   credentialsId: 'GitHub_SSH_Login', 
+					   url: 'git@github.com:giliyablo/Pio_Repo.git'  
 				}
             }
         }
@@ -28,10 +24,8 @@ pipeline {
         stage('Build Docker') {
             steps {
                 script {
-                    dir('Pio_Repo') {
-						// bat 'wget https://github.com/giliyablo/CI_CD_Pio_Gili/blob/24307ba2ebc98c07d376c94ee89e5c00fd516cc2/Dockerfile' 
-						bat 'docker build -t gili/gili-pio-app-image:latest .' 
-                    }
+					// bat 'wget https://github.com/giliyablo/CI_CD_Pio_Gili/blob/24307ba2ebc98c07d376c94ee89e5c00fd516cc2/Dockerfile' 
+					bat 'docker build -t gili/gili-pio-app-image:latest .' 
                 }
             }
         }
@@ -39,7 +33,8 @@ pipeline {
 	}
     post {
         always {
-            archiveArtifacts '**/*.log'  // Archive logs for troubleshooting
+            // archiveArtifacts '**/*.log'  // Archive logs for troubleshooting
+			
             // success {
             //    // Optional success notification (e.g., send email)
             //}
