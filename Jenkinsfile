@@ -16,11 +16,9 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 script {
-					withCredentials([usernamePassword(credentialsId: GitHub_SSH_Login, sshPrivateKey: '$class: hudson.util.Secret')]){
-						sh """
-							git clone git@github.com:giliyablo/Pio_Repo.git
-						"""
-					}
+					git branch: 'main',
+					   credentialsId: 'GitHub_SSH_Login', 
+					   url: 'git@github.com:giliyablo/Pio_Repo.git'  
 				}
             }
         }
