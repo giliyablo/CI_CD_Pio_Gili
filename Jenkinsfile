@@ -16,9 +16,11 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 script {
-					git branch: 'main',
-					   credentialsId: 'GitHub_SSH_Login', 
-					   url: 'git@github.com:giliyablo/Pio_Repo.git'  
+					withCredentials([usernamePassword(credentialsId: GitHub_SSH_Login, sshPrivateKey: '$class: hudson.util.Secret')]){
+						sh """
+							git clone git@github.com:giliyablo/Pio_Repo.git
+						"""
+					}
 				}
             }
         }
@@ -26,7 +28,7 @@ pipeline {
         stage('Build Docker') {
             steps {
                 script {
-					bat 'docker build -t gili/gili-pio-app-image:latest .' 
+					sh 'docker build -t gili/gili-pio-app-image:latest .' 
                 }
             }
         }
@@ -34,7 +36,7 @@ pipeline {
         stage('Deploy Docker') {
             steps {
                 script {
-					bat """
+					sh """
 						docker run -p 4200:4200 -t gili/gili-pio-app-image:latest
 					"""
                 } //  bash -c "cd /app && ng serve"
