@@ -40,12 +40,12 @@ pipeline {
     post {
         always {
             archiveArtifacts '**/*.log'  // Archive logs for troubleshooting
-            success {
-                // Optional success notification (e.g., send email)
-            }
-            failure {
-                // Optional failure notification (e.g., send email)
-            }
+            // success {
+            //    // Optional success notification (e.g., send email)
+            //}
+            //failure {
+            //    // Optional failure notification (e.g., send email)
+            //}
         }
     }
 }
