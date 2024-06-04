@@ -27,6 +27,16 @@
         name: docker-ce
         state: latest
   
+    - name: Install Docker package
+      yum:
+        name: java-11-openjdk
+        state: latest
+  
+    - name: Install Docker package
+      yum:
+        name: git
+        state: latest
+  
     - name: Start and enable Docker service
       service:
         name: docker
