@@ -33,6 +33,7 @@ pipeline {
 	}
     post {
         always {
+			echo "Done!"
             // archiveArtifacts '**/*.log'  // Archive logs for troubleshooting
 			
             // success {
