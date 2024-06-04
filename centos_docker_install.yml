@@ -20,10 +20,8 @@
         mode: 0644
         
     - name: Add Docker repository
-      yum_config_manager:
-        name: docker-ce.repo
-        url: https://download.docker.com/linux/centos/docker-ce.repo
-
+      shell: yum config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+     
     - name: Install Docker package
       yum:
         name: docker-ce
