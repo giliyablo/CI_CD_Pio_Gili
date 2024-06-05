@@ -38,14 +38,13 @@
         name: centos
         groups: docker
         append: yes
-		
+
     - name: Install Java
       yum:
         name: java-11-openjdk
         state: latest
-  
+        
     - name: Install Git
       yum:
         name: git
         state: latest
-  

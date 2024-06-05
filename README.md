@@ -128,3 +128,55 @@ ok=1 changed=0 unreachable=0 failed=0
 
 TASK [Gathering Facts] *************************************************************
 ok=1 changed=0 unreachable=0 failed=0
+
+
+
+4. CI/CD Flow Explanation
+
+This CI/CD pipeline automates the process of building and deploying a Docker image for a Pio application, likely stored in a Git repository. It leverages Jenkins, a popular continuous integration and continuous delivery (CI/CD) tool. Here's a breakdown of the stages:
+
+1. Clean Workspace
+
+This stage ensures the workspace is clean before starting the build process.
+cleanWs(): Removes any files from the previous build in the workspace.
+docker rm -fv pio-app: Stops and removes any running Docker container named "pio-app" if it exists.
+docker rmi -f pio-app-image: Removes any Docker image named "pio-app-image" if it exists.
+2. Checkout Code
+
+This stage retrieves the latest code from the Git repository.
+git branch: 'main', credentialsId: 'GitHub_SSH_Login', url: 'git@github.com:giliyablo/Pio_Repo.git': Checks out the main branch of the Pio_Repo.git repository on GitHub using SSH authentication credentials stored under the ID "GitHub_SSH_Login."
+3. Build Docker
+
+This stage builds the Docker image for the Pio application.
+docker build -t pio-app-image:latest .: Builds a Docker image using the Dockerfile located in the current directory, tags it as pio-app-image:latest, and builds it in the context of the current directory (.).
+4. Deploy Docker
+
+This stage deploys the built Docker image.
+docker run -d -p 80:80 --name pio-app pio-app-image:latest: Runs a container from the pio-app-image:latest image in detached mode (-d), maps the container's port 80 to the host's port 80 (-p 80:80), and names the container pio-app. This essentially starts the Pio application within a Docker container and makes it accessible on port 80 of the host machine.
+5. Post-Build Actions
+
+The always block within the post section ensures that regardless of the pipeline's success or failure, a message is printed ("Done!").
+
+
+CI/CD Flow Diagram
+
++-------------------+         +-------------------+         +-------------------+         +-------------------+
+| Clean Workspace   |         | Checkout Code     |         | Build Docker      |         | Deploy Docker     |
++-------------------+         +-------------------+         +-------------------+         +-------------------+
+     |                     |          |                     |          |                     |          |                     |
+     | Clean files         |          | Git checkout        |          | Build Docker image |          | Run container      |
+     | Clean Docker        | ------> | (main branch)       | ------> | (from Dockerfile) | ------> | (port 80 mapping) |
+     | containers/images |          | Pio_Repo.git        |          |                     |          | (as pio-app)      |
+     |                     |          |                     |          |                     |          |                     |
++-------------------+         +-------------------+         +-------------------+         +-------------------+
+                                     | (Success/Failure)                     |
+                                     +---------------------------------------+
+                                               |
+                                               | "Done!" (always)
+                                               +------------------
+                                                     | (Optional)
+                                                     +-----------------
+                                                       | Archive logs (*.log)
+
+
+
