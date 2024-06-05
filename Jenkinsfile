@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
 					sh """
-						docker run -p 4200:4200 -t gili/gili-pio-app-image:latest
+						docker run -p 80:80 -t gili/gili-pio-app-image:latest
 					"""
                 } //  bash -c "cd /app && ng serve"
             }
