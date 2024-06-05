@@ -9,6 +9,9 @@ pipeline {
             steps {
                 script {
 					cleanWs()
+					sh 'docker rm -fv $(docker ps -a -q)' 
+					sh 'docker rmi -f $(docker images -a -q)' 
+					sh 'docker system prune' 
 				}
             }
         }
