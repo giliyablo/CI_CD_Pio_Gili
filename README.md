@@ -122,12 +122,106 @@ Run the command: ansible-playbook centos_docker_install.yml
 (From the directory containing the script and inventory file).
 
 Example Output:
+# ansible-playbook centos_docker_install.yml -i hosts
 
-PLAY [all] ********************************************************************
-ok=1 changed=0 unreachable=0 failed=0
+PLAY [Install and configure Docker] **********************************************************************************************
 
-TASK [Gathering Facts] *************************************************************
-ok=1 changed=0 unreachable=0 failed=0
+TASK [Gathering Facts] ***********************************************************************************************************
+ok: [centos@18.153.72.201]
+
+TASK [Update package lists] ******************************************************************************************************
+ok: [centos@18.153.72.201]
+
+TASK [Create directory for Docker key] *******************************************************************************************
+ok: [centos@18.153.72.201]
+
+TASK [Download Docker GPG key] ***************************************************************************************************
+ok: [centos@18.153.72.201]
+
+TASK [Add Docker repository] *****************************************************************************************************
+changed: [centos@18.153.72.201]
+
+TASK [Install Docker package] ****************************************************************************************************
+ok: [centos@18.153.72.201]
+
+TASK [Start and enable Docker service] *******************************************************************************************
+ok: [centos@18.153.72.201]
+
+TASK [Add user to docker group] **************************************************************************************************
+ok: [centos@18.153.72.201]
+
+TASK [Install Java] **************************************************************************************************************
+ok: [centos@18.153.72.201]
+
+TASK [Install Git] ***************************************************************************************************************
+ok: [centos@18.153.72.201]
+
+PLAY RECAP ***********************************************************************************************************************
+centos@18.153.72.201       : ok=10   changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+3. Jenkinsfile for build and deploy the angular project: 
+pipeline {
+	// Execute on any available agent: 
+    agent {
+		// Choosing an agent: 
+		label 'ci-cd'
+	}  
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                script {
+					// Cleaning Files from workspace: 
+					cleanWs()
+					
+					// Cleaning docker containers: 
+					sh 'docker rm -fv pio-app' 
+					
+					// Cleaning docker images: 
+					sh 'docker rmi -f pio-app-image' 
+				}
+            }
+        }
+
+        stage('Checkout Code') {
+            steps {
+                script {
+					// Checking out the Git Repository: 
+					git branch: 'main',
+					   credentialsId: 'GitHub_SSH_Login', 
+					   url: 'git@github.com:giliyablo/Pio_Repo.git'  
+				}
+            }
+        }
+
+        stage('Build Docker') {
+            steps {
+                script {
+					// Building the docker image: 
+					sh 'docker build -t pio-app-image:latest .' 
+                }
+            }
+        }
+
+        stage('Deploy Docker') {
+            steps {
+                script {
+					// Deploying the docker image: 
+					sh """
+						docker run -d -p 80:80 --name pio-app pio-app-image:latest
+					"""
+                }
+            }
+        }
+
+	}
+    post {
+        always {
+			echo "Done!"
+            // archiveArtifacts '**/*.log'  // Archive logs for troubleshooting
+        }
+    }
+}
 
 
 
