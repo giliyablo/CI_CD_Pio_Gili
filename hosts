@@ -1,5 +1,5 @@
 [all]
-172.17.0.3
+centos@18.153.72.201 ansible_ssh_private_key_file=/root/.ssh/devops-exam.pem
 
 [webservers]
-172.17.0.3
+centos@18.153.72.201 ansible_ssh_private_key_file=/root/.ssh/devops-exam.pem
