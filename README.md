@@ -20,6 +20,9 @@ The CD pipeline automates the packaging, delivery, and deployment of the applica
 Continuous Delivery (CD): Involves automated delivery of the application to a staging environment, ready for manual deployment to production after approval.
 Continuous Deployment (CD): Involves fully automated deployment of the application directly to production, typically used when high levels of confidence and stability exist.
 
+Unit Tests: Focuses on unit or integration tests, likely using a lightweight image with testing frameworks.
+E2E Tests: Focuses on simulating user interactions and testing the entire application flow with a production-like image. 
+
 Diagram:
 ```
 +-------------------+         +-------------------+         +-----------------------+         +--------------------+
@@ -276,9 +279,62 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
+The Dockerfile.test: 
+```
+# Stage 1: Build Angular codebase (optimized)
+FROM node:alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the source code to app
+COPY . /app
+
+# Install dependencies efficiently with multi-stage build
+RUN npm install
+RUN npm install -g @angular/cli --save
+RUN npm install karma-jasmine karma-chrome-launcher jasmine-core --save-dev
+RUN npm install karma-cli --save-dev
+
+RUN apk add chromium
+ENV CHROME_BIN=/usr/bin/chromium-browser
+
+RUN ng build
+
+# Build the application
+CMD ["ng", "test"]
+
+```
+
+The Dockerfile.e2e:
+```
+# Stage 1: Build Angular codebase (optimized)
+FROM cypress/base:latest
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the source code to app
+COPY . /app
+
+# Install dependencies efficiently with multi-stage build
+RUN npm install
+RUN npm install -g @angular/cli --save
+
+# RUN apk add chromium
+# ENV CHROME_BIN=/usr/bin/chromium-browser
+
+RUN ng build
+
+# Build the application
+CMD ["ng", "e2e"]
+
+```
+
 ## 4. CI/CD Flow Explanation
 
-This CI/CD pipeline automates the process of building and deploying a Docker image for a Pioneer application, stored in a Git repository. Here's a breakdown of the stages:
+This CI/CD pipeline automates the process of building and deploying a Docker image for a Pioneer application, stored in a Git repository. 
+Here's a breakdown of the stages:
 
 ### 1. Clean Workspace
 
@@ -302,8 +358,20 @@ This stage retrieves the latest code from the Git repository.
 git branch: 'main', credentialsId: 'GitHub_SSH_Login', url: 'git@github.com:giliyablo/Pio_Repo.git'
 ```
 
+### 3. Run Tests:
+This stage prepears a docker for unit testing. 
 
-### 3. Build Docker
+Building the docker image for unit tests:
+It uses a specific Dockerfile named Dockerfile.test. 
+This file contains instructions for building an image specifically designed for running tests. 
+It includes the application code along with any necessary testing frameworks and libraries.
+Running the docker container:
+The script builds the image named pio-app-test-image:latest.
+Then, it runs the image in detached mode (-d) and assigns the name pio-app-test, convinient for deleting on the next build.
+Finally, it retrieves and displays the logs from the container using ```docker logs -f pio-app-test```. 
+This allows us to monitor the test execution progress. 
+
+### 4. Build Docker
 
 This stage builds the Docker image for the Pio application.
 
@@ -312,7 +380,7 @@ This stage builds the Docker image for the Pio application.
 docker build -t pio-app-image:latest .
 ```
  
-### 4. Deploy Docker
+### 5. Deploy Docker
 
 This stage deploys the built Docker image.
 
@@ -321,32 +389,22 @@ This stage deploys the built Docker image.
 docker run -d -p 80:80 --name pio-app pio-app-image:latest
 ```
 
-### 5. Post-Build Actions
+### 6. Run E2E (Stage):
+
+This stage focuses on running End-to-End (E2E) tests. 
+
+Building the docker image:
+Similar to the "Run Tests" stage, it builds a docker image, but this time using a different Dockerfile named Dockerfile.e2e.
+This file includes the application alongside tools and configurations needed for E2E testing.
+Running the docker container:
+The script builds the image named pio-app-e2e-image:latest.
+It then runs the image in detached mode (-d) with the name pio-app-e2e, convinient for deleting on the next build.
+Finally, it retrieves and displays the logs from the container using ```docker logs -f pio-app-e2e```. 
+This allows us to monitor the E2E test execution.
+
+### 7. Post-Build Actions
 
 This block within the post section ensures that regardless of the pipeline's success or failure, a message is printed ("Archive Logs!"). 
 I wanted to use this stage originally to archive important logs coming from the tests.
 I ran the test locally on my computer, but haven’t managed to run them on the VM yet without using Chrome. 
 
-```
-CI/CD Flow Diagram
-
-+-------------------+         +-------------------+         +-------------------+         +-------------------+
-| Clean Workspace   |         | Checkout Code     |         | Build Docker      |         | Deploy Docker     |
-+-------------------+         +-------------------+         +-------------------+         +-------------------+
-     |                     |          |                     |          |                     |          |                     |
-     | Clean files         |          | Git checkout        |          | Build Docker image |          | Run container      |
-     | Clean Docker        | ------> | (main branch)       | ------> | (from Dockerfile) | ------> | (port 80 mapping) |
-     | containers/images |          | Pio_Repo.git        |          |                     |          | (as pio-app)      |
-     |                     |          |                     |          |                     |          |                     |
-+-------------------+         +-------------------+         +-------------------+         +-------------------+
-                                     | (Success/Failure)                     |
-                                     +---------------------------------------+
-                                               |
-                                               | "Archive Logs!" (always)
-                                               +------------------
-                                                     | (Optional)
-                                                     +-----------------
-                                                       | Archive logs (*.log)
-
-
-```
