@@ -32,6 +32,19 @@ pipeline {
             }
         }
 
+        stage('Run Tests') {
+            steps {
+                script {
+					// Building the docker image: 
+					
+					sh """
+						docker build -f Dockerfile.test -t pio-app-test-image:latest . 
+						docker run -d -p 80:80 --name pio-app-test pio-app-test-image:latest
+					"""
+                }
+            }
+        }
+
         stage('Build Docker') {
             steps {
                 script {
