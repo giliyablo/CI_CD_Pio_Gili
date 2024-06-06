@@ -55,7 +55,7 @@ pipeline {
 	}
     post {
         always {
-			echo "Done!"
+			echo "Archive Logs!"
             // archiveArtifacts '**/*.log'  // Archive logs for troubleshooting
         }
     }
