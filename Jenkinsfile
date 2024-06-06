@@ -61,7 +61,6 @@ pipeline {
 					// Deploying the docker image: 
 					sh """
 						docker run -d -p 80:80 --name pio-app pio-app-image:latest
-						docker logs -f pio-app
 					"""
                 }
             }
