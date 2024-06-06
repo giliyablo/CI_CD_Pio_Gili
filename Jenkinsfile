@@ -65,6 +65,19 @@ pipeline {
             }
         }
 
+        stage('Run E2E') {
+            steps {
+                script {
+					// Building the docker image: 
+					
+					sh """
+						docker build -f Dockerfile.e2e -t pio-app-e2e-image:latest . 
+						docker run -d -p 80:80 --name pio-app-e2e pio-app-e2e-image:latest
+					"""
+                }
+            }
+        }
+
 	}
     post {
         always {
