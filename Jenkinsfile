@@ -13,10 +13,10 @@ pipeline {
 					cleanWs()
 					
 					// Cleaning docker containers: 
-					sh 'docker rm -fv pio-app' 
+					sh 'docker rm -fv pio-app pio-app-test pio-app-e2e' 
 					
 					// Cleaning docker images: 
-					sh 'docker rmi -f pio-app-image' 
+					sh 'docker rmi -f pio-app-image pio-app-test-image pio-app-e2e-image' 
 				}
             }
         }
