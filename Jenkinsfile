@@ -39,7 +39,7 @@ pipeline {
 					
 					sh """
 						docker build -f Dockerfile.test -t pio-app-test-image:latest . 
-						docker run -d -p 80:80 --name pio-app-test pio-app-test-image:latest
+						docker run -d --name pio-app-test pio-app-test-image:latest
 						docker logs -f pio-app-test
 					"""
                 }
@@ -73,7 +73,7 @@ pipeline {
 					
 					sh """
 						docker build -f Dockerfile.e2e -t pio-app-e2e-image:latest . 
-						docker run -d -p 80:80 --name pio-app-e2e pio-app-e2e-image:latest
+						docker run -d --name pio-app-e2e pio-app-e2e-image:latest
 						docker logs -f pio-app-e2e
 					"""
                 }
